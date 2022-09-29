@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .root {
+        display: flex;
+      }
+      .dragArea {
+        width: 500px;
+        height: 500px;
+        margin-right: 20px;
+        background-color: #f6ad21;
+      }
+      .dragArea .dragImg {
+        width: 150px;
+        height: 150px;
+      }
+
+      .dropArea {
+        width: 500px;
+        height: 500px;
+        background-color: #9ec440;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="root">
+      <div class="dragArea">
+        <img
+          class="dragImg"
+          src="https://conan-online.fbcontent.cn/aries-oss-resource/web-assets/5407982_nd2.jpg"
+          alt=""
+          draggable="true"
+          ondragstart="onDragstart(event)"
+          ondragend="onDragend(event)"
+        />
+      </div>
+      <div
+        class="dropArea"
+        ondrop="onDrop(event)"
+        ondragover="onDragover(event)"
+      >
+        <!-- <div class="dropCard"></div>
+        <div class="dropCard"></div> -->
+      </div>
+    </div>
+
+    <script>
+      function onDragstart(event) {
+        console.log(`--------onDrag----------`);
+        event.dataTransfer.setData("data", 1);
+      }
+
+      function onDragover(event) {
+        console.log(`--------onDragover----------`);
+        // 默认的无法将元素/数据放置到其他元素中，如果需要防止我们必须在onDragover事件中阻止对元素的默认处理方式
+        event.preventDefault();
+      }
+
+      function onDragend (event) {
+        console.log(`--------onDragend----------`)
+      }
+
+      function onDrop(event) {
+        console.log(`--------$onDrop----------`);
+        // 调用 preventDefault() 来避免浏览器对数据的默认处理（drop 事件的默认行为是以链接形式打开）
+        event.preventDefault();
+        const data = event.dataTransfer.getData("data");
+        console.log("data", data);
+      }
+    </script>
+  </body>
+</html>
