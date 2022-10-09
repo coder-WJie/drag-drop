@@ -64,12 +64,30 @@ effectAllowed字段用来限制dropAllowed ,有种父亲和儿子的感觉
 
 #### react-dnd 设计原理
 
-<DNDContext></DNDContext>组件的作用
+**项目结构**
+
+**首先明确三个模块的主要职责：**
+
+backend：负责具体拖拽事件的实现
+dnd-core: 封装了数据驱动的核心逻辑
+react-dnd: 封装了用户直接使用的react元素（组件，hooks等）
+
+
+DndProvider组件接收 backend，context，options 三个参数，实际上context 和 options 最终在dnd-core模块的createDragDropManager方法中用来创建 monitor， manager， backend
+
+reactDnd 通过monitor对象将正在拖动的元素状态暴露出来，比如是否正在拖动：isDragging，是否处于hover状态：isOver等等，monitor是如何知道拖动状态的？
+在创建DragDropMonitorImpl实例时，store作为参数传入，因此monitor可以从store中读取拖拽元素的状态。
+
+为什么backend里 handleDragStart具体事件里只是将 sourceId unshift进 dragStartSourceIds中？
+
+其中backend的生成正是我们传入的backend(manager, context, options)执行得到的。
+
+在DndProvider组件内部调用getDndContextValue（）方法时，作为createSingletonDndContext（）方法的参数传入，最终调用createDragDropManager创建manager实例时
 
 **DndProvider**
 - backend: 必填，dnd后端可以使用官方的提供的两个 HTML5Backend or TouchBackend，或者也可以自己写backend后端。
 - context: 选填，用户配置后端的上下文，这取决于后端的实现。
-- options: 配置后端对象，自定义时可以传入backend。后面有例子。
+- options: 配置后端对象，自定义时可以传入backend。后面有例子。·
 
 
 
@@ -83,6 +101,7 @@ arguments[1]: 拖动源的连接器功能。这必须附加到DOM的可拖动部
 arguments[2]: 用于拖动预览的连接器功能。这可以附加到DOM的预览部分。
 
 **然后useDrag传入的参数有**
+
 
 item: 必填。一个普通的JavaScript对象，描述了要拖动的数据。这是可用于放置目标的有关拖动源的唯一信息
 item.type: 必填，并且必须是字符串，ES6符号。只有注册为相同类型的放置目标才会对此项目做出反应
